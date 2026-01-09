@@ -25,6 +25,8 @@ export default function MapView() {
   const [userLocation, setUserLocation] = useState(null)
   const [mapCenter, setMapCenter] = useState([-37.4697, -72.3537]) // Los Ángeles, Chile por defecto
   const [petRoutes, setPetRoutes] = useState({}) // { petId: [sightings] }
+  const [breedsMap, setBreedsMap] = useState({}) // { breedId: breedName }
+  const [colorsMap, setColorsMap] = useState({}) // { colorId: colorInfo }
 
   // Obtener ubicación del usuario
   useEffect(() => {
@@ -45,6 +47,7 @@ export default function MapView() {
 
   // Cargar mascotas y avistamientos
   useEffect(() => {
+    loadBreedsAndColors()
     loadPets()
     loadSightings()
     
@@ -87,6 +90,41 @@ export default function MapView() {
     
     setPetRoutes(routes)
   }, [sightings])
+
+  const loadBreedsAndColors = async () => {
+    try {
+      // Cargar todas las razas
+      const { data: breedsData } = await supabase
+        .from('pet_breeds')
+        .select('id, name, name_es')
+      
+      if (breedsData) {
+        const breeds = {}
+        breedsData.forEach(breed => {
+          breeds[breed.id] = breed.name_es || breed.name
+        })
+        setBreedsMap(breeds)
+      }
+
+      // Cargar todos los colores
+      const { data: colorsData } = await supabase
+        .from('pet_colors')
+        .select('id, name, name_es, hex_code')
+      
+      if (colorsData) {
+        const colors = {}
+        colorsData.forEach(color => {
+          colors[color.id] = {
+            name: color.name_es || color.name,
+            hex: color.hex_code
+          }
+        })
+        setColorsMap(colors)
+      }
+    } catch (error) {
+      console.error('Error cargando razas y colores:', error)
+    }
+  }
 
   const loadPets = async () => {
     try {
@@ -215,12 +253,18 @@ export default function MapView() {
           const pet = pets.find(p => p.id === sighting.pet_id)
           if (!pet) return null
 
+          // Obtener información de raza y color
+          const breedName = pet.breed_id ? breedsMap[pet.breed_id] : pet.breed_custom
+          const colorInfo = pet.color_id ? colorsMap[pet.color_id] : (pet.color_custom ? { name: pet.color_custom } : null)
+
           return (
             <PetMarker
               key={`sighting-${sighting.id}`}
               position={[sighting.latitude, sighting.longitude]}
               pet={pet}
               sighting={sighting}
+              breedName={breedName}
+              colorInfo={colorInfo}
               onClick={() => handleMarkerClick(pet)}
             />
           )
@@ -239,7 +283,12 @@ export default function MapView() {
 
       {/* Alertas de proximidad */}
       {userLocation && nearbyPets.length > 0 && (
-        <ProximityAlerts pets={nearbyPets} userLocation={userLocation} />
+        <ProximityAlerts 
+        pets={nearbyPets} 
+        userLocation={userLocation}
+        breedsMap={breedsMap}
+        colorsMap={colorsMap}
+      />
       )}
 
       {/* Modal de reporte */}

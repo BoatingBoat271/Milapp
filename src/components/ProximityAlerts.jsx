@@ -4,7 +4,7 @@ import { format } from 'date-fns'
 import es from 'date-fns/locale/es/index.js'
 import { useNavigate } from 'react-router-dom'
 
-export default function ProximityAlerts({ pets, userLocation }) {
+export default function ProximityAlerts({ pets, userLocation, breedsMap, colorsMap }) {
   const [alerts, setAlerts] = useState([])
   const [dismissedAlerts, setDismissedAlerts] = useState(new Set())
   const navigate = useNavigate()
@@ -15,11 +15,14 @@ export default function ProximityAlerts({ pets, userLocation }) {
       Notification.requestPermission()
     }
 
-    // Crear alertas para mascotas cercanas
-    const newAlerts = pets.map(pet => ({
+    // Filtrar solo mascotas perdidas (lost) para las alertas
+    const lostPets = pets.filter(pet => pet.status === 'lost')
+    
+    // Crear alertas solo para mascotas perdidas cercanas
+    const newAlerts = lostPets.map(pet => ({
       id: pet.id,
       pet,
-      message: `¡${pet.name || 'Una mascota'} está cerca de tu ubicación!`,
+      message: `¡${pet.name || 'Una mascota perdida'} está cerca de tu ubicación!`,
       timestamp: new Date()
     }))
 
@@ -61,7 +64,14 @@ export default function ProximityAlerts({ pets, userLocation }) {
                   {alert.message}
                 </h4>
                 <p className="text-sm text-yellow-700 mb-2">
-                  {alert.pet.species} {alert.pet.breed ? `- ${alert.pet.breed}` : ''}
+                  {alert.pet.species === 'dog' ? 'Perro' : alert.pet.species === 'cat' ? 'Gato' : alert.pet.species}
+                  {' '}
+                  {(() => {
+                    const breedName = alert.pet.breed_id 
+                      ? breedsMap[alert.pet.breed_id] 
+                      : alert.pet.breed_custom
+                    return breedName ? `- ${breedName}` : ''
+                  })()}
                 </p>
                 <p className="text-xs text-yellow-600">
                   {format(alert.timestamp, "HH:mm", { locale: es })}

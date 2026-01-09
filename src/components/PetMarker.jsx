@@ -32,12 +32,14 @@ const sightedIcon = new L.Icon({
   shadowSize: [41, 41]
 })
 
-export default function PetMarker({ position, pet, sighting, onClick }) {
+export default function PetMarker({ position, pet, sighting, breedName, colorInfo, onClick }) {
   const getIcon = () => {
     if (pet.status === 'lost') return lostIcon
     if (pet.status === 'found') return foundIcon
     return sightedIcon
   }
+
+  const speciesLabel = pet.species === 'dog' ? 'Perro' : pet.species === 'cat' ? 'Gato' : pet.species
 
   return (
     <Marker position={position} icon={getIcon()} eventHandlers={{ click: onClick }}>
@@ -48,9 +50,22 @@ export default function PetMarker({ position, pet, sighting, onClick }) {
             <div className="flex items-center space-x-2">
               <MapPin size={14} className="text-gray-500" />
               <span className="text-gray-600">
-                {pet.species} {pet.breed ? `- ${pet.breed}` : ''}
+                {speciesLabel} {breedName ? `- ${breedName}` : ''}
               </span>
             </div>
+            {colorInfo && (
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-600">
+                  Color: {colorInfo.hex && (
+                    <span 
+                      className="inline-block w-3 h-3 rounded-full border border-gray-300 mr-1"
+                      style={{ backgroundColor: colorInfo.hex }}
+                    ></span>
+                  )}
+                  {colorInfo.name}
+                </span>
+              </div>
+            )}
             <div className="flex items-center space-x-2">
               <Clock size={14} className="text-gray-500" />
               <span className="text-gray-600">

@@ -1,124 +1,74 @@
 # 🐾 Milapp - Ayuda y Seguimiento de Mascotas
 
-Aplicación web para ayudar y hacer seguimiento de mascotas perdidas en tiempo real.
+Aplicación web progresiva (PWA) para ayudar y hacer seguimiento de mascotas perdidas en tiempo real.
 
-## 📋 ¿Qué hace esta aplicación?
-
-- **Mapa interactivo**: Ver y reportar avistamientos de mascotas en un mapa
-- **Seguimiento de rutas**: Ver el historial de movimientos de una mascota
-- **Alertas cercanas**: Recibir notificaciones cuando hay mascotas cerca (5km)
-- **Comunidad**: Ofrecer o pedir casas de acogida, medicamentos y donaciones
-- **Verificación**: Los usuarios pueden confirmar si una mascota sigue en un lugar
-
-## 🚀 Cómo empezar
+## 🚀 Inicio Rápido
 
 ### 1. Instalar dependencias
-
 ```bash
 npm install
 ```
 
-### 2. Configurar Supabase
-
-1. Ve a [https://supabase.com](https://supabase.com) y crea una cuenta
-2. Crea un nuevo proyecto (gratis)
-3. Ve a **SQL Editor** y ejecuta el contenido del archivo `supabase/schema.sql`
-4. Ve a **Settings** > **API** y copia:
-   - **Project URL**
-   - **anon public** key (o publishable key)
-
-### 3. Configurar variables de entorno
+### 2. Configurar variables de entorno
 
 Crea un archivo `.env` en la raíz del proyecto:
-
-```env
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu_key_aqui
+```
+VITE_SUPABASE_URL=tu_url_de_supabase
+VITE_SUPABASE_ANON_KEY=tu_anon_key
+VITE_GOOGLE_MAPS_API_KEY=tu_api_key_de_google_maps
 ```
 
-### 4. Ejecutar la aplicación
-
+### 3. Ejecutar en desarrollo
 ```bash
 npm run dev
 ```
 
-Abre tu navegador en `http://localhost:3000`
+### 4. Base de datos
 
-## 🛠️ Tecnologías usadas
+**IMPORTANTE: Ejecuta estos scripts en Supabase SQL Editor (en orden):**
 
-- [React](https://react.dev/) - Interfaz de usuario
-- [Vite](https://vitejs.dev/) - Herramienta de desarrollo
-- [Tailwind CSS](https://tailwindcss.com/) - Estilos
-- [Leaflet](https://leafletjs.com/) - Mapas
-- [Supabase](https://supabase.com/) - Base de datos
+1. **Primero**: `supabase/setup-completo.sql` (crea todas las tablas base)
+2. **Segundo**: `supabase/agregar-campos-perdida.sql` (campos para pérdida de mascotas)
+3. **Tercero**: `supabase/sistema-roles-usuarios-v2.sql` (sistema de roles y admin)
 
-## 📱 Funcionalidades principales
+**Después de ejecutar los scripts:**
+- Crea tu cuenta en la app (en `/login`)
+- Luego ejecuta este SQL para convertirte en admin (reemplaza el email):
 
-### Reportar avistamiento
-1. Haz clic en el botón verde "Reportar ahora"
-2. Completa el formulario con la información de la mascota
-3. La ubicación se captura automáticamente
-4. Guarda el reporte
-
-### Ver perfil de mascota
-- Haz clic en cualquier marcador del mapa
-- Verás toda la información, historial médico y línea de tiempo de avistamientos
-
-### Comunidad
-- Ve a la sección "Comunidad"
-- Ofrece o solicita ayuda (casas de acogida, medicamentos, donaciones)
-
-## 🔧 Comandos disponibles
-
-```bash
-npm run dev      # Iniciar servidor de desarrollo
-npm run build    # Construir para producción
-npm run preview  # Previsualizar build de producción
+```sql
+UPDATE user_profiles 
+SET user_role = 'admin' 
+WHERE email = 'tu_email@ejemplo.com';
 ```
 
-## 📝 Notas importantes
+📖 **Ver instrucciones detalladas**: `supabase/CREAR_USUARIO_ADMIN.md`
 
-- La aplicación funciona mejor si permites la ubicación en el navegador
-- Las notificaciones deben estar habilitadas para recibir alertas
-- Asegúrate de ejecutar el SQL en Supabase antes de usar la aplicación
+## 📦 Build para producción
+```bash
+npm run build
+```
 
-## 📚 Documentación
+## 🎯 Funcionalidades
 
-- [Supabase Docs](https://supabase.com/docs)
-- [React Docs](https://react.dev/learn)
-- [Leaflet Docs](https://leafletjs.com/reference.html)
+- ✅ Mapa interactivo con Google Maps
+- ✅ Reporte de avistamientos con ubicación
+- ✅ Selección de razas y colores por especie
+- ✅ Subida de imágenes o enlaces desde redes sociales
+- ✅ Mapa en detalles de mascota
+- ✅ Línea de tiempo de avistamientos
+- ✅ Alertas de proximidad (5km)
+- ✅ Verificación comunitaria
 
-## 🌐 Publicar en Internet
+## 🛠️ Tecnologías
 
-Para compartir tu aplicación con otros, puedes desplegarla en:
+- React + Vite
+- Tailwind CSS
+- Supabase (Base de datos y tiempo real)
+- Google Maps API
+- Lucide Icons
 
-- **[Vercel](https://vercel.com)** - Gratis y muy fácil (recomendado)
-- **[Netlify](https://netlify.com)** - Gratis y fácil
-- **[GitHub Pages](https://pages.github.com)** - Gratis
+## 📝 Notas
 
-Ver instrucciones detalladas en [DEPLOY.md](DEPLOY.md)
-
-### 🔗 Tu Link en Vercel
-
-Tu link es: **`milapp.vercel.app`**
-
-**Siguiente paso** (si ya configuraste las variables):
-1. Haz clic en **"Deploy"** o **"Redeploy"** en Vercel
-2. Espera 1-2 minutos
-3. ¡Listo! El link funcionará
-
-Ver guía completa en [SIGUIENTE_PASO.md](SIGUIENTE_PASO.md)
-
-### Acceso Local desde Red
-
-Si quieres acceder desde otro dispositivo en tu misma red:
-
-1. El servidor ya está configurado para permitir acceso externo
-2. Encuentra tu IP local:
-   - Windows: `ipconfig` (busca IPv4)
-   - Mac/Linux: `ifconfig`
-3. Accede desde otro dispositivo: `http://TU_IP:3000`
-
-## 📄 Licencia
-
-MIT
+- Asegúrate de tener configuradas las API Keys en `.env`
+- La base de datos debe tener las tablas creadas antes de usar la app
+- Para producción, configura las restricciones de la API Key de Google Maps

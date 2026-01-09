@@ -610,14 +610,18 @@ export default function MapViewGoogle() {
             Necesitas configurar tu API Key de Google Maps para usar el mapa.
           </p>
           <div className="bg-yellow-50 border border-yellow-200 rounded p-4 text-left text-sm">
-            <p className="font-semibold mb-2">Pasos para obtener tu API Key:</p>
+            <p className="font-semibold mb-2">Pasos para configurar en Vercel:</p>
             <ol className="list-decimal list-inside space-y-1 text-gray-700">
-              <li>Ve a <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google Cloud Console</a></li>
-              <li>Crea un proyecto o selecciona uno existente</li>
-              <li>Habilita la API de Maps JavaScript</li>
-              <li>Crea una API Key</li>
-              <li>Agrega la key a tu archivo .env como: <code className="bg-gray-200 px-1 rounded">VITE_GOOGLE_MAPS_API_KEY=tu_api_key</code></li>
+              <li>Obtén tu API Key de <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Google Cloud Console</a></li>
+              <li>Ve a tu proyecto en <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Vercel</a></li>
+              <li>Settings → Environment Variables</li>
+              <li>Agrega: <code className="bg-gray-200 px-1 rounded">VITE_GOOGLE_MAPS_API_KEY</code></li>
+              <li>Pega tu API Key y selecciona Production, Preview y Development</li>
+              <li>Guarda y haz "Redeploy" del proyecto</li>
             </ol>
+            <p className="mt-3 text-xs text-gray-600">
+              💡 Si estás en desarrollo local, agrega la key a tu archivo <code className="bg-gray-200 px-1 rounded">.env</code>
+            </p>
           </div>
         </div>
       </div>
